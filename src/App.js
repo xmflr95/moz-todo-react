@@ -1,8 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Todo from "./components/Todo";
 import Form from "./components/Form";
 import FilterButton from "./components/FilterButton";
 import { nanoid } from "nanoid";
+
+function isEmpty(value) {
+  if (!value) {
+    return true;
+  }
+  return false;
+}
 
 function usePrevious(value) {
   const ref = useRef();
@@ -25,6 +32,11 @@ function App(props) {
   const [filter, setFilter] = useState("All");
 
   function addTask(name) {
+    if (isEmpty(name)) {
+      alert("Your Input is Empty");
+      return;
+    }
+
     const newTask = { 
       id: `todo-${nanoid()}`, 
       name, 
@@ -52,6 +64,10 @@ function App(props) {
   }
 
   function editTask(id, newName) {
+    if (isEmpty(newName)) {
+      alert("Your Input is Empty");
+      return;
+    }
     const editedTaskList = tasks.map((task) => {
       if (id === task.id) {
         return { ...task, name: newName };
@@ -71,7 +87,7 @@ function App(props) {
         key={task.id} 
         toggleTaskCompleted={toggleTaskCompleted} 
         deleteTask={deleteTask}
-        editTask={editTask}
+        editTask={editTask} 
       />
     ));
 
@@ -100,7 +116,9 @@ function App(props) {
   return (
     <div className="todoapp stack-large">
       <h1>TodoMatic</h1>
-      <Form addTask={addTask}/>
+      <Form 
+        addTask={addTask} 
+      />
       <div className="filters btn-group stack-exception">
         { filterList }
       </div>
